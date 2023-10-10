@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <cassert>
+#include <iomanip>
 
 #define ASSERT assert(false)
 
@@ -31,9 +32,15 @@ inline Vec2 posToXY(int pos, int rows, int cols) {
 
 #define MAGENTABLACK "\033[45m\033[30m"
 
-static void Print(const Status data[ROWS][COLS]) {
+static void Print(const Status data[ROWS][COLS], int pos) {
+    Vec2 xy = posToXY(pos, ROWS, COLS);
+    int xi = xy.X;
+    int yi = xy.Y;
     for (int x = 0; x < ROWS; x++) {
         for (int y = 0; y < COLS; y++) {
+            if (xi == x && yi == y) {
+                std::cout << RED;
+            }
             switch (data[x][y])
             {
             case Status::Unknown:
@@ -58,6 +65,7 @@ static void Print(const Status data[ROWS][COLS]) {
                 std::cout << "C ";
                 break;
             }
+            std::cout << RESET;
         }
         std::cout << "" << std::endl;
     }
@@ -134,6 +142,8 @@ static void ViewHeatMap(const HeatMap heatMap) {
     int range = largest - lowest;
     float delta = (float)range / 7;
 
+    int numberOfDigits = 3;
+
     for (int x = 0; x < ROWS; x++) {
         for (int y = 0; y < COLS; y++) {
             int value = heatMap.Data[x][y];
@@ -141,31 +151,36 @@ static void ViewHeatMap(const HeatMap heatMap) {
             switch (rangeNumber)
             {
                 case 0:
-                    std::cout << WHITE << value << " " << RESET;
+                    std::cout << WHITE;;
                     break;
                 case 1:
-                    std::cout << BLUE << value << " " << RESET;
+                    std::cout << BLUE;
                     break;
                 case 2:
-                    std::cout << GREEN << value << " " << RESET;
+                    std::cout << GREEN;
                     break;
                 case 3:
-                    std::cout << CYAN << value << " " << RESET;
+                    std::cout << CYAN;
                     break;
                 case 4:
-                    std::cout << YELLOW << value << " " << RESET;
+                    std::cout << YELLOW;
                     break;
                 case 5:
-                    std::cout << RED << value << " " << RESET;
+                    std::cout << RED;
                     break;
                 case 6:
-                    std::cout << MAGENTA << value << " " << RESET;
+                    std::cout << MAGENTA;
                     break;
                 case 7:
-                    std::cout << MAGENTABLACK << value << " " << RESET;
+                    std::cout  << MAGENTABLACK;
                     break;
             }
-            //std::cout << value << " ";
+            if (value > 99)
+                std::cout << value << RESET;
+            else if (value <= 99 && value > 9)
+                std::cout << " " << value << RESET;
+            else
+                std::cout << "  " << value << RESET;
         }
         std::cout << "" << std::endl;
     }

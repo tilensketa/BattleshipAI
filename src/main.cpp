@@ -11,28 +11,24 @@ int main() {
 0 0 0 0 0 0 0 0 0 0
 0 0 2 2 2 0 3 3 3 0
 0 0 0 0 0 0 0 0 0 0
-0 5 5 5 5 5 0 1 0 0
+0 0 0 0 0 0 0 1 0 0
 0 0 0 0 0 0 0 1 0 0
 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
+5 5 5 5 5 0 0 0 0 0
 )";
-	const char* data3 = R"(
-0 0 3
-0 0 3
-0 0 3
-)";
+
 	Board board(data10);
-	Print(board.GetData());
+	//Print(board.GetData());
 
 	int averageCount = 0;
 	int lowestCount = ROWS * COLS;
 	int largestCount = 0;
 
-	bool heatMaps = false;
-	bool heatMap = false;
+	bool heatMaps = true;
+	bool heatMap = true;
 
-	int numberOfGames = 100;
+	int numberOfGames = 1000;
 	for (int i = 0; i < numberOfGames; i++) {
 		Joze joze;
 		int count = 1;
@@ -58,16 +54,16 @@ int main() {
 			int pos = joze.TakeShot();
 			Status status = board.GetStatus(pos);
 			joze.Update(pos, status);
-			joze.RecalculatePosibilities();
+			joze.RecalcAll();
 			joze.GenerateAllHeatMaps();
 			//joze.PrintShips();
-			//Print(joze.GetData());
+			Print(joze.GetData(), pos);
 			if (joze.CheckBreak()) {
 				//std::cout << "Game ended in: " << count << std::endl;
 				break;
 			}
 			count++;
-			//std::cin.get();
+			std::cin.get();
 		}
 		averageCount += count;
 		if (count < lowestCount)

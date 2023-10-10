@@ -28,12 +28,14 @@ public:
 	void GenerateAllHeatMaps();
 	void GenerateAllPosibilities();
 	void PrintShips();
+	void RecalcAll();
 private:
 	int RandomShot();
 	int HeatMapShot();
 	void CalculateShips();
 	void GeneratePosibilities(Status ship);
 	void GenerateHeatMap(Status ship);
+	void Recalc(Status ship);
 private:
 	bool m_Ships[5] = { false, false, false, false, false };
 	int m_PatrolBoat = 0;
@@ -396,8 +398,13 @@ void Joze::RecalculatePosibilities(Status ship) {
 		int x = m_RecentChange.X;
 		int y = m_RecentChange.Y;
 		Status target = m_RecentChange.Stat;
-		if (posibility.Data[x][y] == target) {
-			infos.push_back(posibility);
+		//if (posibility.Data[x][y] == target) {
+		//	infos.push_back(posibility);
+		//}
+		if (target == Status::Sea) {
+			if (posibility.Data[x][y] == target) {
+				infos.push_back(posibility);
+			}
 		}
 	}
 
@@ -531,4 +538,85 @@ void Joze::PrintShips() {
 			std::cout << "floating ";
 	}
 	std::cout << std::endl;
+}
+
+void Joze::Recalc(Status ship) {
+	std::vector<Info>* posibilitiesPtr;
+	int x = m_RecentChange.X;
+	int y = m_RecentChange.Y;
+	Status target = m_RecentChange.Stat;
+	switch (ship)
+	{
+	case Carrier:
+		posibilitiesPtr = &m_CarrierPosibilities;
+		break;
+	case Battleship:
+		posibilitiesPtr = &m_BattleshipPosibilities;
+		break;
+	case Destroyer:
+		posibilitiesPtr = &m_DestroyerPosibilities;
+		break;
+	case Submarine:
+		posibilitiesPtr = &m_SubmarinePosibilities;
+		break;
+	case PatrolBoat:
+		posibilitiesPtr = &m_PatrolBoatPosibilities;
+		break;
+	default:
+		posibilitiesPtr = &m_PatrolBoatPosibilities;
+		ASSERT;
+	}
+
+	std::vector<Info> infos;
+	for (int i = 0; i < posibilitiesPtr->size(); i++) {
+		std::vector<Info> posibilities = *posibilitiesPtr;
+		Info posibility = posibilities[i];
+		if (target == Status::Sea && posibility.Data[x][y] == Status::Sea) {
+			infos.push_back(posibility);
+		}
+		else if (target == ship && posibility.Data[x][y] == ship) {
+			infos.push_back(posibility);
+		}
+		else if (target != ship && target != Status::Sea && posibility.Data[x][y] != ship) {
+			infos.push_back(posibility);
+		}
+	}
+
+	posibilitiesPtr->clear();
+	for (const Info& info : infos) {
+		posibilitiesPtr->push_back(info);
+	}
+}
+
+void Joze::RecalcAll() {
+	if (!m_Ships[0]) {
+		Recalc(Status::PatrolBoat);
+	}
+	else {
+		m_PatrolBoatPosibilities.clear();
+	}
+	if (!m_Ships[1]) {
+		Recalc(Status::Submarine);
+	}
+	else {
+		m_SubmarinePosibilities.clear();
+	}
+	if (!m_Ships[2]) {
+		Recalc(Status::Destroyer);
+	}
+	else {
+		m_DestroyerPosibilities.clear();
+	}
+	if (!m_Ships[3]) {
+		Recalc(Status::Battleship);
+	}
+	else {
+		m_BattleshipPosibilities.clear();
+	}
+	if (!m_Ships[4]) {
+		Recalc(Status::Carrier);
+	}
+	else {
+		m_CarrierPosibilities.clear();
+	}
 }
