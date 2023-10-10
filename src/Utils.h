@@ -4,7 +4,6 @@
 #include <sstream>
 #include <vector>
 #include <cassert>
-#include <iomanip>
 
 #define ASSERT assert(false)
 
@@ -21,6 +20,7 @@ inline Vec2 posToXY(int pos, int rows, int cols) {
     return Vec2(x, y);
 }
 
+#define BLACK "\033[40m"
 #define RED "\033[41m"
 #define GREEN "\033[42m"
 #define YELLOW "\033[43m"
@@ -32,73 +32,45 @@ inline Vec2 posToXY(int pos, int rows, int cols) {
 
 #define MAGENTABLACK "\033[45m\033[30m"
 
-static void Print(const Status data[ROWS][COLS], int pos) {
-    Vec2 xy = posToXY(pos, ROWS, COLS);
+#define BOATCOLOR BLACK
+
+static void Print(const Info& data, int pos) {
+    Vec2 xy(-1, -1);
+    if (pos != -1) {
+        xy = posToXY(pos, ROWS, COLS);
+    }
     int xi = xy.X;
     int yi = xy.Y;
     for (int x = 0; x < ROWS; x++) {
         for (int y = 0; y < COLS; y++) {
             if (xi == x && yi == y) {
-                std::cout << RED;
+                std::cout << "\033[31m";
             }
-            switch (data[x][y])
-            {
-            case Status::Unknown:
-                std::cout << ". ";
-                break;
-            case Status::Sea:
-                std::cout << "+ ";
-                break;
-            case Status::PatrolBoat:
-                std::cout << "P ";
-                break;
-            case Status::Submarine:
-                std::cout << "S ";
-                break;
-            case Status::Destroyer:
-                std::cout << "D ";
-                break;
-            case Status::Battleship:
-                std::cout << "B ";
-                break;
-            case Status::Carrier:
-                std::cout << "C ";
-                break;
-            }
-            std::cout << RESET;
-        }
-        std::cout << "" << std::endl;
-    }
-    std::cout << "____________________" << std::endl;
-}
-
-static void Print(const Info data) {
-    for (int x = 0; x < ROWS; x++) {
-        for (int y = 0; y < COLS; y++) {
             switch (data.Data[x][y])
             {
             case Status::Unknown:
-                std::cout << ". ";
+                std::cout << WHITE << ". ";
                 break;
             case Status::Sea:
-                std::cout << "+ ";
+                std::cout << CYAN << "+ ";
                 break;
             case Status::PatrolBoat:
-                std::cout << "P ";
+                std::cout << BOATCOLOR << "P ";
                 break;
             case Status::Submarine:
-                std::cout << "S ";
+                std::cout << BOATCOLOR << "S ";
                 break;
             case Status::Destroyer:
-                std::cout << "D ";
+                std::cout << BOATCOLOR << "D ";
                 break;
             case Status::Battleship:
-                std::cout << "B ";
+                std::cout << BOATCOLOR << "B ";
                 break;
             case Status::Carrier:
-                std::cout << "C ";
+                std::cout << BOATCOLOR << "C ";
                 break;
             }
+            std::cout << RESET;
         }
         std::cout << "" << std::endl;
     }
@@ -186,4 +158,3 @@ static void ViewHeatMap(const HeatMap heatMap) {
     }
     std::cout << "--------------------" << std::endl;
 }
-

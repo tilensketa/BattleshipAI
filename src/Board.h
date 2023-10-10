@@ -62,9 +62,7 @@ public:
 	Board(const char* boardInfo);
 
 	const Status GetStatus(int pos) const;
-    const Status(&GetData())[ROWS][COLS]{
-        return m_Data;
-    }
+    const Info& GetData() const { return m_Data; }
 private:
-	Status m_Data[ROWS][COLS];
+	Info m_Data;
 };

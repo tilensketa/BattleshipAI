@@ -42,8 +42,11 @@ Board::Board(const char* boardInfo) {
             case 5:
                 cellInfo = Status::Carrier;
                 break;
+            default:
+                cellInfo = Status::Carrier;
+                ASSERT;
             }
-            m_Data[x][y] = cellInfo;
+            m_Data.Data[x][y] = cellInfo;
             row.push_back(cellInfo);
             i++;
         }
@@ -52,5 +55,5 @@ Board::Board(const char* boardInfo) {
 
 const Status Board::GetStatus(int pos) const {
     Vec2 xy = posToXY(pos, ROWS, COLS);
-    return m_Data[xy.X][xy.Y];
+    return m_Data.Data[xy.X][xy.Y];
 }
