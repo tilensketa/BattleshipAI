@@ -28,9 +28,9 @@ int main() {
 	bool heatMaps = true;
 	bool heatMap = true;
 
-	bool autoMode = false;
+	bool autoMode = true;
 
-	int numberOfGames = 100;
+	int numberOfGames = 1000;
 	for (int i = 0; i < numberOfGames; i++) {
 		Joze joze;
 		int count = 1;
@@ -79,6 +79,7 @@ int main() {
 	}
 	averageCount /= numberOfGames;
 	std::cout << std::endl;
+	std::cout << "Number of games played: " << numberOfGames << std::endl;
 	std::cout << "Average count: " << averageCount << std::endl;
 	std::cout << "Lowest count: " << lowestCount << std::endl;
 	std::cout << "Largest count: " << largestCount << std::endl;
